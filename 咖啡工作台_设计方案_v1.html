@@ -1,0 +1,831 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>个人咖啡摄入工作台 · 页面结构、风格、美工与交互设计方案 v1.0</title>
+<style>
+  :root{
+    --ink:#111;
+    --ink-2:#444;
+    --ink-3:#666;
+    --line:#c9c9c9;
+    --line-2:#e2e2e2;
+    --fill:#f5f5f5;
+    --fill-2:#fafafa;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0 auto;padding:40px 22px 96px;max-width:1060px;background:#fff;color:var(--ink);
+    font-family:-apple-system,"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+    font-size:15px;line-height:1.75;
+  }
+  h1,h2,h3,h4{line-height:1.35;font-weight:700}
+  h1{font-size:26px;margin:0 0 10px}
+  h2{font-size:20px;margin:52px 0 14px;padding-bottom:7px;border-bottom:1px solid var(--line)}
+  h3{font-size:16px;margin:30px 0 8px}
+  h4{font-size:14.5px;margin:18px 0 6px}
+  p{margin:0 0 10px}
+  ul,ol{margin:0 0 12px;padding-left:1.35em}
+  li{margin:3px 0}
+  a{color:#0b57d0}
+  a:focus-visible,summary:focus-visible{outline:2px solid #0b57d0;outline-offset:2px}
+  .meta{font-size:13px;color:var(--ink-3);border:1px solid var(--line-2);padding:10px 14px;margin:14px 0 0;background:var(--fill-2)}
+  .meta b{color:var(--ink)}
+  .note{font-size:13px;color:var(--ink-3);border-left:3px solid var(--line);padding:2px 0 2px 12px;margin:12px 0}
+  .warn{font-size:13.5px;border:1px solid var(--line);background:var(--fill);padding:10px 14px;margin:12px 0}
+  code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:var(--fill);padding:1px 5px;border:1px solid var(--line-2)}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px}
+  caption{caption-side:top;text-align:left;font-size:12.5px;color:var(--ink-3);padding:0 0 6px}
+  th,td{border:1px solid var(--line);padding:7px 10px;vertical-align:top;text-align:left}
+  th{background:var(--fill);font-weight:700}
+  tbody tr:nth-child(even) td{background:#fcfcfc}
+  td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+  .toc{border:1px solid var(--line);padding:14px 18px;margin:22px 0 0;background:var(--fill-2)}
+  .toc h2{font-size:15px;margin:0 0 8px;border:0;padding:0}
+  .toc ol{margin:0;padding-left:1.3em;columns:2;column-gap:34px}
+  .toc li{margin:2px 0;font-size:13.5px}
+  @media (max-width:640px){.toc ol{columns:1}}
+
+  /* 灰度线框：仅表示结构，不含视觉设计 */
+  .wf{border:1px solid #999;width:100%;max-width:330px;padding:8px;margin:10px 0;font-size:11.5px;line-height:1.5;background:#fff}
+  .wf .cap{font-size:11px;color:var(--ink-3);border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:6px}
+  .wf .b{border:1px dashed #aaa;background:var(--fill-2);padding:5px 7px;margin:4px 0}
+  .wf .b.solid{border-style:solid}
+  .wf .b b{font-weight:700}
+  .wf .b span{color:var(--ink-3)}
+  .wf .row{display:flex;gap:5px;margin:4px 0}
+  .wf .row .b{flex:1;margin:0;text-align:center}
+  .wf .tab{display:flex;border:1px solid #999;margin-top:6px}
+  .wf .tab div{flex:1;text-align:center;font-size:10.5px;padding:4px 0;border-right:1px solid #999}
+  .wf .tab div:last-child{border-right:0}
+  .wf .dock{display:flex;gap:5px;margin-top:6px}
+  .wf .dock .b{flex:1;text-align:center;margin:0}
+  .wf .bar{height:6px;border:1px solid #999;margin:3px 0;background:#eee}
+  .wf .bar i{display:block;height:100%;background:#bbb}
+  .wf .dots{letter-spacing:2px;color:var(--ink-3)}
+  .wfgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px;align-items:start}
+
+  footer{margin-top:56px;border-top:1px solid var(--line);padding-top:14px;font-size:12.5px;color:var(--ink-3)}
+
+  @media print{
+    body{max-width:none;padding:0;font-size:10.5pt}
+    h2{break-after:avoid}
+    table,.wf{break-inside:avoid}
+    a{color:#000;text-decoration:none}
+    .toc{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+
+<h1>个人咖啡摄入工作台<br>页面结构、风格、美工与交互设计方案</h1>
+
+<div class="meta">
+  <b>版本</b> v1.0　　<b>日期</b> 2026-11-07　　<b>依据</b>《个人咖啡摄入工作台_开发规格说明书_v1.1》（2026-11-04）<br>
+  <b>范围</b> 单人版 MVP · 移动端 H5（375×812 基准）　　<b>IP</b> 泡泡玛特「星星人」系列（沿用官方形象，不做再设计）<br>
+  <b>本页性质</b> 纯方案文本。按你的要求，这一版网页本身不做装饰与视觉设计，线框图为灰度结构示意，配色以文字与色值描述，供后续视觉稿落地。
+</div>
+
+<nav class="toc" aria-label="目录">
+  <h2>目录</h2>
+  <ol>
+    <li><a href="#s1">设计前提与边界</a></li>
+    <li><a href="#s2">IP 使用原则：星星人怎么用、怎么不用</a></li>
+    <li><a href="#s3">配色方案：五套色板与模块分配</a></li>
+    <li><a href="#s4">页面结构（P1–P9 + 2 个补充态）</a></li>
+    <li><a href="#s5">风格与美工规范</a></li>
+    <li><a href="#s6">交互设计</a></li>
+    <li><a href="#s7">验收清单与待定事项</a></li>
+  </ol>
+</nav>
+
+<h2 id="s1">一、设计前提与边界</h2>
+
+<h3>1.1 一句话主张</h3>
+<p>这个工作台不是记账工具，是<b>「一杯一杯攒出来的一本小册子」</b>。所以页面结构按「记录 → 回看 → 提醒」三段走，视觉上按「纸、分格、手写标签」三件事做，星星人只做陪伴，不做装饰填充。</p>
+
+<h3>1.2 三条不能破的硬约束（来自规格书 v1.1）</h3>
+<table>
+  <caption>表 1　约束对设计的影响</caption>
+  <thead><tr><th style="width:22%">约束</th><th style="width:34%">事实依据</th><th>设计要求</th></tr></thead>
+  <tbody>
+    <tr><td>8 秒、≤3 次点击</td><td>规格书 1.3 成功标准 1</td><td>确认页一屏装完、只改不填、保存键常驻底部；星星人不得进入确认页主体区域</td></tr>
+    <tr><td>价格可以空</td><td>三张真实标签 0/3 打印价格</td><td>价格不占必填位；花费模块的分母是「有价格的杯数」；补价入口常驻两处</td></tr>
+    <tr><td>咖啡因与热量是估算</td><td>标签无营养数值，全靠品类基准推算</td><td>所有数字带 <code>≈</code> 与「估算」标；手动改过后要有可识别的第二种状态</td></tr>
+  </tbody>
+</table>
+
+<h3>1.3 本次交付的边界</h3>
+<ul>
+  <li><b>交付</b>：页面地图、每页结构分区、五套配色与模块对应、IP 使用规则、美工规范（字号、边框、图表、控件）、交互流程与状态矩阵。</li>
+  <li><b>不交付</b>：视觉稿、可点击原型、前端代码、解析逻辑实现。</li>
+  <li><b>不在本次讨论</b>：多人账号、社交分享、门店地图（规格书 1.4 已排除）。</li>
+</ul>
+
+<h2 id="s2">二、IP 使用原则：星星人怎么用、怎么不用</h2>
+
+<p>你的要求是「不要对外在形象特点和比例风格做过多的改变和创新」。我把它落成一条可执行的规则：<b>形象冻结，姿态与道具有限开放，出现位置严格分级</b>。这样既保住 IP 的辨识度，又不至于每页都塞一只导致廉价。</p>
+
+<h3>2.1 形象冻结清单</h3>
+<table>
+  <caption>表 2　星星人形象冻结与允许变动</caption>
+  <thead><tr><th style="width:18%">部位</th><th style="width:42%">冻结要求（不得改动）</th><th>允许的变动</th></tr></thead>
+  <tbody>
+    <tr><td>脸</td><td>橙红色圆形脸、两颊腮红、五官位置与大小比例</td><td>表情只用官方素材已存在的版本（睁眼／闭眼／张嘴）</td></tr>
+    <tr><td>帽子</td><td>棕色尖顶巫师帽，帽尖挂一颗小星星</td><td>随姿态调整角度与遮挡</td></tr>
+    <tr><td>身体</td><td>黄色五角星形，头身比、星角弧度不变</td><td>不拉伸、不压扁、不做圆角化</td></tr>
+    <tr><td>四肢</td><td>短手短脚，简化线条</td><td>随姿态变化，不做写实化</td></tr>
+    <tr><td>挎包</td><td>棕色小挎包，包面一颗星</td><td>可空、可插道具（杯、星星、四叶草）</td></tr>
+    <tr><td>勾线</td><td>粗墨线勾边、边缘略不齐的手绘感</td><td>线宽随尺寸等比缩放，小尺寸不小于 1.5px</td></tr>
+  </tbody>
+</table>
+
+<p><b>禁止清单（硬性）</b></p>
+<ul>
+  <li>不改头身比、不做 Q 版或写实化重绘、不做 3D 与拟真渲染。</li>
+  <li>不加服装、不加配饰、不做「品牌配色版」——不把星星人染成界面主色。</li>
+  <li>不做图标、按钮、加载动画、错误提示的插图（会显得在嘲笑用户）。</li>
+  <li>不进入表格、明细行、字段密集区（尺寸一缩小，辨识度立刻崩）。</li>
+</ul>
+
+<div class="warn"><b>素材前提</b>：所有星星人形象必须使用泡泡玛特官方授权的素材或官方图库导出的 PNG／SVG。在拿到素材之前，设计稿里一律用占位框标注「星星人 48×48（官方素材）」，<b>不自绘复刻</b>，避免风格走样与授权风险。</div>
+
+<h3>2.2 可用的「星星人元素库」</h3>
+<p>不出现完整形象时，用下面这些元素维持系列感，成本低、不占版面。</p>
+<table>
+  <caption>表 3　元素库与用法</caption>
+  <thead><tr><th style="width:20%">元素</th><th style="width:38%">用法</th><th>出现位置</th></tr></thead>
+  <tbody>
+    <tr><td>手写英文标签</td><td>斜贴的小纸条，全大写手写体，如 MORNING / MY CUP / GOOD NIGHT</td><td>首页顶部、保存成功页、空态卡</td></tr>
+    <tr><td>四角星散点</td><td>2–5 颗，大小不一，随机但避开文字区</td><td>页脚、卡片留白、图表角落</td></tr>
+    <tr><td>纸胶带</td><td>半透明色块压在卡片角上，宽 60–80px</td><td>卡片流、月历、插画卡</td></tr>
+    <tr><td>粗线分格框</td><td>不规则分格线，作为模块容器的边</td><td>首页模块、图表卡</td></tr>
+    <tr><td>云朵小狗 / 拟人太阳 / 雏菊 / 四叶草</td><td>小尺寸陪衬，只作背景纹理或角落点缀</td><td>空态、保存成功、设置页页脚</td></tr>
+    <tr><td>手绘下划线</td><td>在关键数字下画一条略抖的线</td><td>核心指标、月历「今天」</td></tr>
+  </tbody>
+</table>
+
+<h3>2.3 出现密度分级</h3>
+<table>
+  <caption>表 4　页面 × 星星人密度</caption>
+  <thead><tr><th style="width:16%">级别</th><th style="width:26%">规格</th><th>适用页面</th></tr></thead>
+  <tbody>
+    <tr><td>A 级（主形象）</td><td>120–180px，完整形象，带姿态与道具</td><td>首页空态、保存成功、清空数据确认。整页只允许 1 个</td></tr>
+    <tr><td>B 级（小形象）</td><td>40–64px，半身或侧身，可裁切出画</td><td>首页顶部、解析中、详情页角标、设置页页脚。单页不超过 2 个</td></tr>
+    <tr><td>C 级（元素）</td><td>仅星点、胶带、手写标签，无完整形象</td><td>明细、确认页、品牌页、所有图表卡</td></tr>
+  </tbody>
+</table>
+
+<div class="note"><b>一条自我约束</b>：星星人只在「陪伴、鼓励、空白、完成」四种情境出现，<b>不在「超标、错误、删除、失败」出现</b>。用户咖啡因超标时，页面不该有一只小人在看着他——那是评判，不是陪伴。</div>
+
+<h2 id="s3">三、配色方案：五套色板与模块分配</h2>
+
+<h3>3.1 从五张参考图提取的五套色板</h3>
+<p>五张图的底色、主色、点缀都不一样，正好可以当作五套模块皮肤。下面的色值是我从图上取的近似值（用于说明关系与比例），<b>落地前需按官方素材与屏幕校色重新取样</b>。</p>
+
+<table>
+  <caption>表 5　五套色板（近似值）</caption>
+  <thead>
+    <tr><th style="width:8%">编号</th><th style="width:20%">参考图</th><th style="width:13%">底色</th><th style="width:13%">主色</th><th style="width:13%">辅色</th><th style="width:13%">点缀</th><th>情绪</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><b>S1</b></td><td>图 1 · MORNING, MY FRIEND（日出山丘）</td><td>奶油 <code>#FBF1D8</code></td><td>赭橙 <code>#E2603A</code></td><td>橄榄 <code>#8C9A4B</code></td><td>芥黄 <code>#F0C24B</code></td><td>清晨、出发</td></tr>
+    <tr><td><b>S2</b></td><td>图 2 · 阳台雏菊（Have a nice day）</td><td>雾青绿 <code>#A8C4B4</code></td><td>砖红 <code>#A6432E</code></td><td>深橄榄 <code>#4B5320</code></td><td>雏菊白 <code>#FDFAF0</code></td><td>白天、生活</td></tr>
+    <tr><td><b>S3</b></td><td>图 3 · GoodBye（黄昏星空）</td><td>藕粉 <code>#EBC9C2</code></td><td>珊瑚 <code>#DE6A4A</code></td><td>灰紫 <code>#B3A7BC</code></td><td>奶油 <code>#FBF1D8</code></td><td>黄昏、收尾</td></tr>
+    <tr><td><b>S4</b></td><td>图 4 · WAITING FOR U（深蓝星空）</td><td>夜蓝 <code>#4C6E9E</code></td><td>深蓝 <code>#2F4468</code></td><td>砖红 <code>#A6432E</code></td><td>星黄 <code>#F2CE63</code></td><td>夜晚、安静</td></tr>
+    <tr><td><b>S5</b></td><td>图 5 · SPRING DATE 2022</td><td>黄绿 <code>#D8DC7C</code></td><td>暖橙 <code>#DF8B4E</code></td><td>藕紫 <code>#C6B6C2</code></td><td>墨 <code>#2C2620</code></td><td>季节、生长</td></tr>
+  </tbody>
+</table>
+
+<p><b>统一的中性层</b>：无论用哪套色板，页面的「纸」和「墨」不变——纸底统一为 S1 的奶油 <code>#FBF1D8</code>，正文与线条统一为墨棕 <code>#3B2C20</code>。五套色板只改<b>容器底色、图表色块、标题装饰、插画配色</b>，不改纸与墨。这是「模块拉开差异但整体协调」的关键：<b>变的是色块，不变的是纸。</b></p>
+
+<h3>3.2 模块与色板的对应</h3>
+<table>
+  <caption>表 6　模块 → 色板分配（首页自上而下即「一天的顺序」）</caption>
+  <thead><tr><th style="width:22%">页面 / 模块</th><th style="width:10%">色板</th><th style="width:30%">用色方式</th><th>为什么是这套</th></tr></thead>
+  <tbody>
+    <tr><td>首页 · 顶部问候与今日状态</td><td>S1</td><td>奶油底 + 赭橙标题 + 星黄点缀</td><td>一天的开始，用日出色</td></tr>
+    <tr><td>首页 · 预警条</td><td>语义色</td><td>黄 <code>#F0C24B</code>／红 <code>#D2542C</code>，不随模块变</td><td>警示必须全站一致</td></tr>
+    <tr><td>首页 · 核心指标 4 格</td><td>S1</td><td>奶油底、墨线框、数字用墨棕</td><td>信息最重的一块，配色必须最安静</td></tr>
+    <tr><td>首页 · 预算进度</td><td>S5</td><td>黄绿底条 + 暖橙进度 + 墨色刻度</td><td>「生长／累积」的语义，对应月底结算</td></tr>
+    <tr><td>首页 · 咖啡因进度</td><td>S3</td><td>藕粉底条 + 珊瑚进度 + 灰紫刻度</td><td>对应身体感受，暖而不刺眼</td></tr>
+    <tr><td>首页 · 品牌频次</td><td>S2</td><td>雾青绿底 + 砖红条形 + 深橄榄文字</td><td>品牌是「生活场景」，用白天色</td></tr>
+    <tr><td>首页 · 冷热环形</td><td>S1</td><td>冰=雾青 <code>#9FBEB9</code>、常温=芥黄、热=赭橙</td><td>S1 自带冷暖两极，语义天然对应</td></tr>
+    <tr><td>首页 · 时段热力格</td><td>S1→S3→S4</td><td>早段用 S1、午晚用 S3、夜间用 S4，横向渐变</td><td>时段本身就是从早到晚，用色温表达最直观</td></tr>
+    <tr><td>首页 · 月历</td><td>S5</td><td>黄绿底格 + 墨线 + 杯数点阵</td><td>日子与季节感</td></tr>
+    <tr><td>首页 · 卡片流</td><td>S2</td><td>雾青绿纸卡 + 纸胶带 + 手写日期</td><td>最生活化的一块，允许有情绪</td></tr>
+    <tr><td>P2 拍照 / 解析</td><td>S4</td><td>深蓝取景底 + 星黄取景框</td><td>深色取景在任何光线下都看得清，且夜里不刺眼</td></tr>
+    <tr><td>P3 确认页</td><td>S1</td><td>奶油底 + 墨线 + 赭橙主按钮</td><td>全流程最关键的一屏，配色降到最低干扰</td></tr>
+    <tr><td>S1 保存成功</td><td>S3</td><td>藕粉底 + 珊瑚字 + 星星人举杯</td><td>一天结束的暖收尾</td></tr>
+    <tr><td>S2 月历展开</td><td>S5</td><td>同首页月历，底色可加深一档</td><td>与首页保持连续</td></tr>
+    <tr><td>P5 明细</td><td>S1</td><td>奶油底、墨线表格、行内无底色</td><td>表格最怕花，用中性层</td></tr>
+    <tr><td>P4 详情</td><td>S1 + S4</td><td>上半 S1（基础信息），营养分组切 S4 深蓝底</td><td>用色块区分「事实」与「估算」</td></tr>
+    <tr><td>P6 品牌页</td><td>S2</td><td>雾青绿头图 + 砖红数据</td><td>延续品牌模块</td></tr>
+    <tr><td>P7 我的 / 设置</td><td>S4</td><td>深蓝头图 + 奶油内容区</td><td>安静、不催促</td></tr>
+    <tr><td>P8 预算与上限弹层</td><td>S5</td><td>黄绿弹层头 + 墨色输入</td><td>与预算模块同族</td></tr>
+    <tr><td>P9 批量补价弹层</td><td>S2</td><td>雾青绿分组头 + 砖红「待补」标记</td><td>与品牌模块同族</td></tr>
+    <tr><td>空态 / 引导</td><td>S1 + S3</td><td>奶油底 + 大插画，插画配色取 S3</td><td>空态是唯一的「大画面」位置</td></tr>
+  </tbody>
+</table>
+
+<h3>3.3 三条配色纪律</h3>
+<ol>
+  <li><b>语义色不跟模块走。</b>超标＝赭橙 <code>#D2542C</code>、接近＝芥黄 <code>#F0C24B</code>、正常＝橄榄 <code>#6C7834</code>、估算＝灰 <code>#8A8078</code>。这四个颜色在任何模块里都不许被替换，否则用户会误读。</li>
+  <li><b>同屏不超过两套色板。</b>首页是唯一例外（纵向滚动，一屏只出现 1–2 套）。超出就回到中性层。</li>
+  <li><b>大面积色块饱和度降 10%。</b>参考图是海报，允许高饱和；界面要长时间看，模块底色统一降饱和，把高饱和留给数据色块与插画。</li>
+</ol>
+
+<h3>3.4 昼夜色温映射（首页时段热力格的特别处理）</h3>
+<p>规格书要求「5 时段 × 7 天热力格」。如果按数量深浅上色，看不出「什么时候喝」的规律。改成按色温上色：</p>
+<table>
+  <caption>表 7　时段 → 色温</caption>
+  <thead><tr><th style="width:22%">时段</th><th style="width:20%">色板</th><th>颜色</th></tr></thead>
+  <tbody>
+    <tr><td>06–09 清晨</td><td>S1</td><td>奶油底 + 芥黄块（一天最亮）</td></tr>
+    <tr><td>09–12 上午</td><td>S2</td><td>雾青绿块</td></tr>
+    <tr><td>12–14 午间</td><td>S3</td><td>珊瑚浅块</td></tr>
+    <tr><td>14–18 下午</td><td>S3</td><td>藕粉深块</td></tr>
+    <tr><td>18–24 夜间</td><td>S4</td><td>夜蓝块 + 星黄点</td></tr>
+  </tbody>
+</table>
+<p class="note">好处：一眼就能看出「我是不是总在晚上喝」。这比单纯的数量深浅多回答了一个问题，也是五套配色里唯一有功能意义的一处混用。</p>
+<h2 id="s4">四、页面结构</h2>
+
+<h3>4.1 页面清单</h3>
+<table>
+  <caption>表 8　页面清单（编号沿用规格书 4.1，S 开头为本方案补充的两个状态页）</caption>
+  <thead><tr><th style="width:8%">编号</th><th style="width:16%">页面</th><th style="width:9%">层级</th><th style="width:30%">职责</th><th style="width:8%">主色板</th><th>星星人级别</th></tr></thead>
+  <tbody>
+    <tr><td>P1</td><td>首页</td><td>一级</td><td>仪表盘＋月历＋卡片流，一条纵向叙事</td><td>S1</td><td>B（顶部 1 处）</td></tr>
+    <tr><td>P2</td><td>拍照 / 选图</td><td>模态</td><td>取景、相册、解析进度</td><td>S4</td><td>B（解析中）</td></tr>
+    <tr><td>P3</td><td>确认页</td><td>模态</td><td>字段预填与人工校正，唯一入库口</td><td>S1</td><td>C（仅元素）</td></tr>
+    <tr><td>S1</td><td>保存成功</td><td>模态态</td><td>1 秒反馈 + 即时预警</td><td>S3</td><td>A（1 处）</td></tr>
+    <tr><td>S2</td><td>月历展开</td><td>二级</td><td>整月网格、连续天数、当天侧滑</td><td>S5</td><td>C</td></tr>
+    <tr><td>P5</td><td>明细表</td><td>一级</td><td>排序、筛选、导出、补价入口</td><td>S1</td><td>C</td></tr>
+    <tr><td>P4</td><td>记录详情</td><td>三级</td><td>单条全字段 + 标签原图 + 编辑删除</td><td>S1＋S4</td><td>B（角标）</td></tr>
+    <tr><td>P6</td><td>品牌页</td><td>二级</td><td>单品牌汇总：杯数、花费、均价、Top3</td><td>S2</td><td>C</td></tr>
+    <tr><td>P7</td><td>我的 / 设置</td><td>一级</td><td>预算、上限、提醒、字典、导出、清空</td><td>S4</td><td>B（页脚）</td></tr>
+    <tr><td>P8</td><td>预算与上限弹层</td><td>弹层</td><td>改两个阈值，立即生效</td><td>S5</td><td>无</td></tr>
+    <tr><td>P9</td><td>批量补价弹层</td><td>弹层</td><td>按品牌＋产品分组填价</td><td>S2</td><td>无</td></tr>
+  </tbody>
+</table>
+
+<h3>4.2 页面地图</h3>
+<pre style="font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.7;border:1px solid #c9c9c9;padding:14px;overflow-x:auto;background:#fafafa">
+底部 3 Tab
+├─ P1 首页 ──┬─ 核心指标 ───────→ P5 明细（带范围筛选）
+│            ├─ 预算进度 ───────→ P8 预算与上限弹层
+│            ├─ 咖啡因进度 ─────→ P5 明细（筛选＝今天）
+│            ├─ 品牌频次 ───────→ P6 品牌页
+│            ├─ 冷热 / 时段 ────→ P5 明细（筛选＝温度 / 时段）
+│            ├─ 月历 ───────────→ S2 月历展开；点某天→当天记录侧滑
+│            └─ 卡片流 ─────────→ P4 记录详情
+├─ P5 明细 ──┬─ 行 ───────────→ P4 记录详情
+│            ├─ 价格「未填」────→ P9 批量补价弹层
+│            └─ 右上「导出」────→ CSV 下载
+└─ P7 我的 ──┬─ 预算 / 上限 ───→ P8 弹层
+             ├─ 提醒开关（就地）
+             ├─ 字典管理 ──────→ 字典子页（本期只读+校准基准）
+             └─ 导出 / 清空（二次确认）
+
+模态录入链（从任一 Tab 唤起，覆盖全屏，无 Tab 栏）
+P2 拍照 → 解析中 → P3 确认 → S1 保存成功 → 回 P1 并滚动到「今天」
+                     └─ 解析失败 / 超时 → P3 手动录入态（原图置顶，只填 4 项）
+</pre>
+
+<h3>4.3 P1 首页</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="首页灰度线框">
+    <div class="cap">P1 首页 · 375×812 滚动页</div>
+    <div class="b solid"><b>问候 + 今天第 N 杯</b> <span>＋右上拍照按钮</span></div>
+    <div class="b"><span>[条件] 预警条：本月已花 ¥186/¥200，还剩 ¥14</span></div>
+    <div class="b solid">7 天 ｜ 14 天 ｜ 30 天 ｜ <b>本月</b></div>
+    <div class="row">
+      <div class="b"><b>18 杯</b></div>
+      <div class="b"><b>¥186</b></div>
+    </div>
+    <div class="row">
+      <div class="b"><b>≈98mg</b><br><span>按 24 天计</span></div>
+      <div class="b"><b>≈165kcal</b><br><span>按 24 天计</span></div>
+    </div>
+    <div class="b solid"><b>预算</b> 93% <span>· 18 杯中 15 杯有价格 · 去补价</span>
+      <div class="bar"><i style="width:93%"></i></div>
+    </div>
+    <div class="b solid"><b>今日咖啡因</b> 260/400mg <span>· 还剩 140mg</span>
+      <div class="bar"><i style="width:65%"></i></div>
+    </div>
+    <div class="b solid"><b>品牌频次</b><br><span>库迪 7 ｜ 古茗 5 ｜ 霸王茶姬 4 ｜ 瑞幸 2</span></div>
+    <div class="b solid"><b>饮用规律</b><br><span>冷热环形（冰 12 / 常温 1 / 热 5）＋ 5×7 时段热力格</span></div>
+    <div class="b solid"><b>11 月月历</b><br><span>点阵＝杯数，底色＝咖啡因总量</span></div>
+    <div class="b solid"><b>最近 3 条</b> <span>· 全部记录 ›</span></div>
+    <div class="tab"><div>首页</div><div>明细</div><div>我的</div></div>
+  </div>
+
+  <div>
+    <table>
+      <caption>表 9　首页分区与去向</caption>
+      <thead><tr><th style="width:26%">分区</th><th style="width:40%">内容</th><th>交互</th></tr></thead>
+      <tbody>
+        <tr><td>① 顶部状态</td><td>「十一月 · 第 18 杯」＋「今天第 2 杯 · 还剩 140mg」＋拍照按钮</td><td>拍照按钮 → P2</td></tr>
+        <tr><td>② 预警条</td><td>只显示 1 条最高优先级；可关闭，当天不再出现</td><td>点击 → 对应下钻；右侧 ×</td></tr>
+        <tr><td>③ 范围切换</td><td>7 / 14 / 30 天 / 本月，sticky 吸顶</td><td>切换只影响 ④⑤⑥</td></tr>
+        <tr><td>④ 核心指标</td><td>杯数、总花费、日均咖啡因、日均热量</td><td>每格 → P5 带筛选</td></tr>
+        <tr><td>⑤ 预算进度</td><td>已花/预算、剩余、执行率、补价提示行</td><td>条 → P8；「去补价」→ P9</td></tr>
+        <tr><td>⑥ 咖啡因进度</td><td>今日累计/上限、剩余</td><td>→ P5 筛选今天</td></tr>
+        <tr><td>⑦ 品牌频次</td><td>Top5 横向条形，含杯数与金额</td><td>行 → P6</td></tr>
+        <tr><td>⑧ 饮用规律</td><td>冷热环形＋时段热力格（合并一张卡）</td><td>扇区/格子 → P5 带筛选</td></tr>
+        <tr><td>⑨ 月历</td><td>当月网格、点阵、咖啡因色阶</td><td>点某天 → 侧滑；标题 → S2</td></tr>
+        <tr><td>⑩ 卡片流</td><td>最近 3 条，缩略图＋关键值</td><td>卡 → P4；「全部」→ P5</td></tr>
+      </tbody>
+    </table>
+    <p class="note">首屏（812px 内）必须出现 ①④⑤⑥；⑦⑧ 允许被折叠到第二屏。首页不做九宫格，避免八个数字等权重。</p>
+  </div>
+</div>
+
+<h3>4.4 P2 拍照 / 解析</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="拍照页灰度线框">
+    <div class="cap">P2-A 拍照（深色全屏，S4）</div>
+    <div class="b"><span>提示：把杯身标签放进框里，避开反光</span></div>
+    <div class="b solid" style="height:120px;display:flex;align-items:center;justify-content:center">取景框（虚线）<br><span>平铺 ／ 补光 ／ 别斜拍</span></div>
+    <div class="dock">
+      <div class="b">相册</div>
+      <div class="b solid" style="flex:0 0 30%">快门</div>
+      <div class="b">闪光灯</div>
+    </div>
+  </div>
+  <div class="wf" role="img" aria-label="解析页灰度线框">
+    <div class="cap">P2-B 解析中（≤10 秒）</div>
+    <div class="b" style="height:70px;display:flex;align-items:center;justify-content:center">标签原图缩略（可点开放大）</div>
+    <div class="b solid"><b>正在读这张标签</b>
+      <div>✓ 品牌 → 库迪</div>
+      <div>✓ 产品 → 心动粉芭乐茉莉</div>
+      <div>◌ 时间 → 补全年份…</div>
+      <div>· 杯型 / 糖度 → 待读</div>
+      <div class="bar"><i style="width:58%"></i></div>
+      <span>超过 10 秒直接转手动录入</span>
+    </div>
+    <div class="b"><span>跳过 → 直接进确认页（保留已读字段）</span></div>
+  </div>
+</div>
+<table>
+  <caption>表 10　拍照与解析的结构要点</caption>
+  <thead><tr><th style="width:24%">要点</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>深色取景</td><td>门店、车内、夜间的环境光复杂，浅底会让取景框失去对比。用 S4 夜蓝作底，星黄作取景框。</td></tr>
+    <tr><td>逐项点亮</td><td>解析结果按「品牌 → 产品 → 时间 → 杯型糖度」顺序点亮，不做单一进度圈。用户能看见系统在读什么，等待感下降。</td></tr>
+    <tr><td>预期管理</td><td>底部常驻「超过 10 秒转手动」，把失败前置成预期，而不是事后报错。</td></tr>
+    <tr><td>降级路径</td><td>相机权限被拒 → 就地切相册并给一句说明；整张识别失败 → 直接进 P3 手动态，不弹失败框。</td></tr>
+  </tbody>
+</table>
+
+<h3>4.5 P3 确认页</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="确认页灰度线框">
+    <div class="cap">P3 确认页 · 唯一入库口（S1）</div>
+    <div class="b solid"><b>← 确认这一杯</b> <span>右侧：2 项待核对</span></div>
+    <div class="b"><span>原图缩略 78×64 ＋ 待核对提示 ＋ 置信度 0.72</span></div>
+    <div class="b solid"><b>① 必改区</b>
+      <div>品牌：库迪 ｜ 瑞幸 ｜ 古茗 ｜ 霸王茶姬 ｜ 喜茶 ｜ 其他</div>
+      <div>产品名：心动粉芭乐茉莉</div>
+      <div>温度：冰 ｜ 常温 ｜ <b>热</b>（黄底·核对）</div>
+      <div>糖度：滑块 0–5（含 0.5）＝微甜（黄底·核对）</div>
+    </div>
+    <div class="b solid"><b>② 确认区</b>
+      <div>杯型：S ｜ M ｜ <b>L</b> ｜ XL　容量 473ml（按品牌默认）</div>
+      <div>时间：02-11 13:51（年份已补全 · 可改）</div>
+    </div>
+    <div class="b"><b>③ 可空区（虚线弱化）</b>
+      <div>价格：未填 · 可稍后补</div>
+      <div>门店：未记录门店</div>
+    </div>
+    <div class="b">＋ 咖啡因 / 热量 / 备注（折叠，默认收起）</div>
+    <div class="dock">
+      <div class="b">重新拍</div>
+      <div class="b solid" style="flex:1">保存 · 今天第 3 杯</div>
+    </div>
+  </div>
+  <div>
+    <table>
+      <caption>表 11　确认页字段分组（14 个字段 → 3 区 + 1 折叠）</caption>
+      <thead><tr><th style="width:20%">区</th><th style="width:34%">字段</th><th>控件与规则</th></tr></thead>
+      <tbody>
+        <tr><td>① 必改区</td><td>品牌、产品名、温度、糖度</td><td>品牌＝横滑 chip 单击；温度＝三段；糖度＝7 档吸附滑块；产品名＝输入 2 字联想</td></tr>
+        <tr><td>② 确认区</td><td>杯型、容量、制作时间</td><td>杯型＝四段；容量跟随杯型自动填、可手改；时间＝日期时间选择器</td></tr>
+        <tr><td>③ 可空区</td><td>价格、门店</td><td>虚线边框，标题直写「都可以空」；价格键盘上方给 4 个常用价位 chip</td></tr>
+        <tr><td>④ 折叠区</td><td>咖啡因、热量、备注、品类</td><td>默认收起，展开后可覆盖估算值；品类识别不准时才展开</td></tr>
+      </tbody>
+    </table>
+    <p class="note">分区原则：<b>必改区在拇指区（下半屏）</b>，确认区居中，可空区与折叠区靠上。用户 90% 的情况只动一个温度或糖度，所以必改区离保存键最近。</p>
+    <p class="note">星星人在这里 <b>0 处完整形象</b>，只用「粗线分格框」和「手写英文标签」维持系列感。</p>
+  </div>
+</div>
+
+<h3>4.6 S1 保存成功</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="保存成功页灰度线框">
+    <div class="cap">S1 保存成功（覆盖层，1.5 秒后自动回首页）</div>
+    <div class="b" style="height:110px;display:flex;align-items:center;justify-content:center">星星人 140px 举杯（A 级，官方素材）</div>
+    <div class="b solid" style="text-align:center"><b>已记录 · 今天第 3 杯</b></div>
+    <div class="b"><span>今天累计 390mg / 400mg，还剩 10mg</span></div>
+    <div class="b"><span>[条件] 18:42 这杯，咖啡因还在体内，可能影响今晚入睡</span></div>
+    <div class="dock">
+      <div class="b">看今天</div>
+      <div class="b solid" style="flex:1">回首页</div>
+    </div>
+  </div>
+  <div>
+    <table>
+      <caption>表 12　保存成功的结构</caption>
+      <thead><tr><th style="width:26%">区</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>插画</td><td>唯一的 A 级星星人位置之一。举杯姿态，S3 黄昏配色，象征「这杯结束了」。</td></tr>
+        <tr><td>结论行</td><td>「已记录 · 今天第 3 杯」，用当日序数而不是总数，让反馈有「今天」的重量。</td></tr>
+        <tr><td>即时额度</td><td>今天累计与剩余，一行说完。这是 S3 场景「控量」的落点。</td></tr>
+        <tr><td>预警行</td><td>命中夜间摄入 / 超标 / 杯数偏多时，插入一行文字提示，<b>不换插画</b>（不让 IP 承担负面情绪）。</td></tr>
+        <tr><td>去向</td><td>主按钮「回首页」，次按钮「看今天」。1.5 秒无操作自动回首页。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>4.7 S2 月历展开</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="月历页灰度线框">
+    <div class="cap">S2 月历（S5 黄绿）</div>
+    <div class="b solid"><b>11 月</b> <span>‹ 2026 ›</span></div>
+    <div class="b">本月 18 杯 ｜ 连续 5 天 ｜ 断档 6 天</div>
+    <div class="b solid" style="line-height:2">日 一 二 三 四 五 六<br>1 2 ●3 ●4 ●5 ●6 ●7<br>8 9 ●10 ●11 ●12 13 ●14<br>●15 16 ●17 ●18 ●19 ●20 ●21<br>●22 ●23 ●24 25 26 27 28<br>29 30</div>
+    <div class="b"><span>点某天 → 底部侧滑当天全部记录</span></div>
+  </div>
+  <div>
+    <table>
+      <caption>表 13　月历的三层信息</caption>
+      <thead><tr><th style="width:22%">层</th><th>表达</th></tr></thead>
+      <tbody>
+        <tr><td>杯数</td><td>1–3 个墨点，最多 3 个（3 杯以上仍显示 3 个）</td></tr>
+        <tr><td>咖啡因</td><td>格子底色四档：0 / ≤150 / ≤300 / &gt;300mg</td></tr>
+        <tr><td>今天</td><td>格子加一圈手绘描边＋星星人的小头像（B 级 24px）站在格子上</td></tr>
+      </tbody>
+    </table>
+    <p class="note">星星人只出现在「今天」这一格。它是时间锚点，不是装饰——用户扫一眼就知道「现在在月历的哪个位置」。</p>
+  </div>
+</div>
+
+<h3>4.8 P5 明细表</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="明细页灰度线框">
+    <div class="cap">P5 明细（S1）</div>
+    <div class="b solid"><b>明细</b> <span>筛选 ｜ 导出</span></div>
+    <div class="b">[筛选 chip：本月 ×][库迪 ×][热 ×]</div>
+    <div class="b solid">时间 ｜ 品牌 ｜ 产品 ｜ 杯型 ｜ 温度 ｜ 糖度 ｜ 咖啡因 ｜ 热量 ｜ 价格<br>
+      <span>11-24 15:42 ｜ 古茗 ｜ 生椰拿铁 ｜ L 500 ｜ 热 ｜ 2 ｜ ≈130 ｜ ≈210 ｜ ¥15.9</span><br>
+      <span>11-24 09:20 ｜ 库迪 ｜ 心动粉芭乐茉莉 ｜ L 473 ｜ 热 ｜ 0.5 ｜ ≈130 ｜ ≈150 ｜ ¥9.9</span><br>
+      <span>11-23 14:05 ｜ 霸王茶姬 ｜ 小黄油曲奇拿铁 ｜ 待定 710 ｜ 冰 ｜ 0 ｜ ≈96 ｜ ≈240 ｜ 未填 ›</span>
+    </div>
+    <div class="b"><span>行 → P4 详情；价格「未填」→ P9 补价</span></div>
+  </div>
+  <div>
+    <table>
+      <caption>表 14　明细的移动端取舍</caption>
+      <thead><tr><th style="width:26%">问题</th><th>处理</th></tr></thead>
+      <tbody>
+        <tr><td>11 列放不下</td><td>默认「行卡模式」：两行结构，第一行时间＋品牌＋产品，第二行关键值。右上角可切「表格模式」横向滚动。</td></tr>
+        <tr><td>排序</td><td>表格模式点表头；行卡模式用顶部「排序」下拉（时间／价格／咖啡因）。</td></tr>
+        <tr><td>筛选</td><td>顶部 chip 区，可删可加；筛选抽屉从底部滑出，选完即生效。</td></tr>
+        <tr><td>导出</td><td>右上角图标，导出 CSV（UTF-8 带 BOM，含来源列）。</td></tr>
+        <tr><td>取餐号</td><td>不展示、不导出（隐私）。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>4.9 P4 记录详情</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="详情页灰度线框">
+    <div class="cap">P4 详情（S1 上半 / S4 营养区）</div>
+    <div class="b solid" style="height:90px;display:flex;align-items:center;justify-content:center">标签原图（上滑收起）</div>
+    <div class="b solid"><b>古茗 · 生椰拿铁</b> <span>热 · 五分甜 · L 500ml</span></div>
+    <div class="b solid"><b>基础信息</b><br><span>制作时间 2026-11-24 15:42（年份已补全）／门店 李南保利广场店</span></div>
+    <div class="b solid"><b>规格</b><br><span>温度 热（5 档）／糖度 五分甜（2 档）／杯型 L 500ml</span></div>
+    <div class="b solid"><b>营养（估算）</b><br><span>≈130mg（估算）／≈210kcal（估算）／来源 ESTIMATE</span></div>
+    <div class="b"><b>其他</b><br><span>价格 ¥15.9／备注 …</span></div>
+    <div class="dock"><div class="b">编辑</div><div class="b">重新识别</div><div class="b">删除</div></div>
+  </div>
+  <div>
+    <table>
+      <caption>表 15　详情页规则</caption>
+      <thead><tr><th style="width:26%">规则</th><th>说明</th></tr></thead>
+      <tbody>
+        <tr><td>原图可放大</td><td>双指缩放，上滑收起为 56px 的条，给字段腾空间。</td></tr>
+        <tr><td>营养区换底</td><td>「基础信息 / 规格」用 S1 奶油底，「营养」切 S4 深蓝底——用色块把「标签写的」和「我们算的」分开。</td></tr>
+        <tr><td>来源标记</td><td>估算值前加 ≈；手动改过加小圆点，点开显示「已手动校准 · 2026-11-24」。</td></tr>
+        <tr><td>不展示</td><td>取餐号、会员昵称、门店电话一律不出现。</td></tr>
+        <tr><td>删除</td><td>二次确认，文案写清「删除后首页统计同步减少」，不做撤销 toast（避免误以为可恢复）。</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<h3>4.10 P6 品牌页</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="品牌页灰度线框">
+    <div class="cap">P6 品牌页（S2 雾青绿）</div>
+    <div class="b solid" style="height:64px;display:flex;align-items:center;justify-content:center">品牌头图（雾青绿块 + 品牌名）</div>
+    <div class="b">范围：7 天 ｜ 30 天 ｜ <b>本月</b> ｜ 全部</div>
+    <div class="row"><div class="b"><b>7 杯</b><br><span>本月</span></div><div class="b"><b>¥78</b><br><span>总花费</span></div></div>
+    <div class="row"><div class="b"><b>¥11.1</b><br><span>均价</span></div><div class="b"><b>≈128mg</b><br><span>平均咖啡因</span></div></div>
+    <div class="b solid"><b>最常点 Top3</b><br><span>1 心动粉芭乐茉莉 ×3　2 生椰拿铁 ×2　3 美式 ×2</span></div>
+    <div class="b"><span>平均糖度 0.8 ｜ 冷热 5:2</span></div>
+  </div>
+  <div>
+    <p>品牌页的作用是回答「我在这一家到底花了多少、都点了什么」。结构上只放 6 个数字，不做图表——图表属于首页，品牌页属于查询。</p>
+    <p class="note">入口有三处：首页品牌条形、明细的品牌筛选 chip、卡片流的品牌名。三处都进同一个页面，范围参数随入口带过来。</p>
+  </div>
+</div>
+
+<h3>4.11 P7 我的 / 设置</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="设置页灰度线框">
+    <div class="cap">P7 我的（S4 深蓝头图）</div>
+    <div class="b solid" style="height:60px;display:flex;align-items:center;justify-content:center">深蓝头图：默认用户 + 累计 128 杯</div>
+    <div class="b solid"><b>预算与上限</b><br><span>月预算 ¥200 ›　每日咖啡因上限 400mg ›　恢复默认</span></div>
+    <div class="b solid"><b>提醒</b><br><span>预算预警 开 ／ 咖啡因预警 开 ／ 夜间提醒 18:00</span></div>
+    <div class="b solid"><b>数据</b><br><span>日均口径（自然日·只读）／字典管理 ›／导出 CSV／清空数据</span></div>
+    <div class="b"><b>关于</b><br><span>版本、隐私说明、数据仅存本机</span></div>
+    <div class="b" style="text-align:center"><span>星星人 60px 睡姿（B 级，页脚）</span></div>
+  </div>
+  <div>
+    <table>
+      <caption>表 16　设置页的分组逻辑</caption>
+      <thead><tr><th style="width:22%">分组</th><th style="width:34%">内容</th><th>交互</th></tr></thead>
+      <tbody>
+        <tr><td>预算与上限</td><td>月预算 200、咖啡因上限 400、恢复默认</td><td>行 → P8 弹层；恢复默认需二次确认</td></tr>
+        <tr><td>提醒</td><td>三个开关 + 夜间提醒时间</td><td>开关就地生效，不跳页</td></tr>
+        <tr><td>数据</td><td>口径（只读）、字典、导出、清空</td><td>清空需输入「删除」二字</td></tr>
+        <tr><td>关于</td><td>版本、隐私说明</td><td>静态页</td></tr>
+      </tbody>
+    </table>
+    <p class="note">页脚放星星人睡姿，是这个 IP 唯一「纯情绪、无功能」的位置。放在这里而不是首页，是因为设置页没有效率压力。</p>
+  </div>
+</div>
+
+<h3>4.12 P8 预算与上限弹层、P9 批量补价弹层</h3>
+<div class="wfgrid">
+  <div class="wf" role="img" aria-label="预算弹层灰度线框">
+    <div class="cap">P8 预算与上限（底部弹层，S5）</div>
+    <div class="b">遮罩（点击关闭）</div>
+    <div class="b solid" style="border-style:solid"><b>预算与上限</b>
+      <div>月预算　[ 200 ] 元</div>
+      <div>每日咖啡因上限　[ 400 ] mg</div>
+      <div class="dock"><div class="b">恢复默认</div><div class="b solid" style="flex:1">保存</div></div>
+      <span>修改会重算历史月份的执行率</span>
+    </div>
+  </div>
+  <div class="wf" role="img" aria-label="补价弹层灰度线框">
+    <div class="cap">P9 批量补价（底部弹层，S2）</div>
+    <div class="b">遮罩</div>
+    <div class="b solid"><b>15 杯待补价</b>
+      <div>库迪 · 心动粉芭乐茉莉　3 杯　[ 9.9 ] 应用</div>
+      <div>古茗 · 生椰拿铁　2 杯　[ 15.9 ] 应用</div>
+      <div>霸王茶姬 · 小黄油曲奇拿铁　1 杯　[ 　 ] 应用</div>
+      <div class="dock"><div class="b">逐条填</div><div class="b solid" style="flex:1">全部保存</div></div>
+    </div>
+  </div>
+</div>
+<table>
+  <caption>表 17　两个弹层的交互规则</caption>
+  <thead><tr><th style="width:22%">弹层</th><th style="width:34%">打开方式</th><th>关键规则</th></tr></thead>
+  <tbody>
+    <tr><td>P8 预算与上限</td><td>首页预算条、「改预算」、设置页两行</td><td>数字键盘；范围校验（预算 0–10000，上限 50–1000）；保存后同帧刷新首页进度条与文案；底部固定一行「修改会重算历史月份的执行率」</td></tr>
+    <tr><td>P9 批量补价</td><td>首页「去补价」、明细价格列「未填」</td><td>按品牌＋产品分组，组内填单价一次应用全部；支持逐条；补完回到原位置并刷新花费与均价</td></tr>
+  </tbody>
+</table>
+<h2 id="s5">五、风格与美工规范</h2>
+
+<p>这一节是把「手绘拼贴」翻译成可交付的界面参数。原则一句话：<b>手绘感只出现在容器和装饰层，信息层保持规整</b>——否则数字会读不清，8 秒指标就没了。</p>
+
+<h3>5.1 版式与间距</h3>
+<table>
+  <caption>表 18　间距体系（4pt 基准）</caption>
+  <thead><tr><th style="width:26%">项</th><th style="width:18%">值</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>页面左右边距</td><td>16px</td><td>375 基准；大屏居中最大 480</td></tr>
+    <tr><td>卡片内边距</td><td>14px</td><td>图表卡上下 12</td></tr>
+    <tr><td>卡片间距</td><td>12px</td><td>同一主题内</td></tr>
+    <tr><td>模块间距</td><td>24px</td><td>不同主题之间，用一条 2px 分格线断开</td></tr>
+    <tr><td>底部安全区</td><td>34px</td><td>Tab 栏与 dock 都要让开</td></tr>
+    <tr><td>点击热区</td><td>≥44×44</td><td>小于 44 的图标必须加透明扩展区</td></tr>
+  </tbody>
+</table>
+
+<h3>5.2 字体与字号</h3>
+<table>
+  <caption>表 19　文字层级</caption>
+  <thead><tr><th style="width:22%">角色</th><th style="width:14%">字号/字重</th><th style="width:16%">行高</th><th>用途与注意</th></tr></thead>
+  <tbody>
+    <tr><td>页面标题</td><td>22 / 700</td><td>1.3</td><td>首页「十一月」、二级页标题</td></tr>
+    <tr><td>模块标题</td><td>15 / 700</td><td>1.4</td><td>「预算」「品牌频次」</td></tr>
+    <tr><td>主数字</td><td>32 / 700</td><td>1.1</td><td>核心指标；必须开启 tabular-nums 等宽数字</td></tr>
+    <tr><td>次数字</td><td>18 / 700</td><td>1.2</td><td>卡片内数值</td></tr>
+    <tr><td>正文</td><td>13 / 400</td><td>1.6</td><td>说明、字段值</td></tr>
+    <tr><td>辅助</td><td>11 / 400</td><td>1.5</td><td>口径说明、「估算」标、时间戳；对比度不低于 4.5:1</td></tr>
+    <tr><td>手写英文标签</td><td>≈12（图片）</td><td>—</td><td><b>以官方素材／图片形式使用，不装第三方手写字体</b>，避免字体授权与跨端缺字</td></tr>
+  </tbody>
+</table>
+<p class="note">字体建议：中文用系统字（iOS 苹方 / Android 思源黑体），数字统一用等宽数字特性。全案<b>不引入 Web 字体</b>——首屏 1.5 秒的指标扛不住一次字体下载。</p>
+
+<h3>5.3 容器与边框语言</h3>
+<ul>
+  <li><b>边框即层级</b>：卡片＝2px 墨棕实线＋四角不等圆角（如 14/18/12/20），不用投影分层。</li>
+  <li><b>虚线＝弱化</b>：可空区、折叠区、占位态统一用 1.5px 虚线，语义固定为「这里不是必填」。</li>
+  <li><b>纸纹</b>：模块容器内叠 3–5% 透明度的噪点纹理，只在卡片层，不铺满整页，避免滚动时闪烁。</li>
+  <li><b>纸胶带</b>：只允许出现在卡片流与月历，宽 60–80px，半透明，最多 2 处/屏。</li>
+  <li><b>手绘抖动</b>：边框用轻微不规则路径（±1px），<b>文字与图表不用手绘体</b>，保证可读性。</li>
+</ul>
+
+<h3>5.4 图表规范</h3>
+<table>
+  <caption>表 20　四种图表的美工参数</caption>
+  <thead><tr><th style="width:18%">图表</th><th style="width:30%">参数</th><th>规则</th></tr></thead>
+  <tbody>
+    <tr><td>横向条形（品牌频次）</td><td>高 10px，描边 1.5px，圆角 2px，轨道底色奶油</td><td>按最大值归一，最长为 100%；数值右对齐，带「杯」单位</td></tr>
+    <tr><td>环形（冷热构成）</td><td>外径 96px，内径 60%，扇区间白描边 2px</td><td>中心显示总杯数；冰=雾青、常温=芥黄、热=赭橙，语义固定</td></tr>
+    <tr><td>热力格（时段）</td><td>格 14×14，间隙 4，4 档色阶</td><td>格内不写字；行＝时段、列＝星期；按 3.4 的色温映射上色</td></tr>
+    <tr><td>进度条（预算／咖啡因）</td><td>高 8px，描边 1.5px，25/50/75 处细竖刻度</td><td>超 100% 时右侧溢出段用赭橙斜纹；条尾显示百分比</td></tr>
+    <tr><td>月历</td><td>格 40×44，点 3px，今天外框手绘描边</td><td>底色四档表示咖啡因总量；格内只放日期与点</td></tr>
+  </tbody>
+</table>
+<p class="note">所有图表右下角预留「估算」标注位（11px，灰），与数字同一行对齐。这是硬性要求：<b>没有标注位的图表不许上线。</b></p>
+
+<h3>5.5 控件规范</h3>
+<table>
+  <caption>表 21　基础控件</caption>
+  <thead><tr><th style="width:16%">控件</th><th style="width:30%">规格</th><th>状态</th></tr></thead>
+  <tbody>
+    <tr><td>主按钮</td><td>高 48，芥黄底＋2px 墨线，字 15/700</td><td>默认 / 按下（下移 1px）/ 置灰（字变灰，仍可点，点了定位缺失项）</td></tr>
+    <tr><td>次按钮</td><td>高 48，透明底＋2px 墨线</td><td>默认 / 按下</td></tr>
+    <tr><td>危险按钮</td><td>高 44，赭橙描边，不填充</td><td>只在删除、清空出现</td></tr>
+    <tr><td>分段控件</td><td>高 36，段间 1.5px 线；选中＝墨底奶油字</td><td>2–4 段，超出改横滑 chip</td></tr>
+    <tr><td>滑块（糖度）</td><td>轨道 6px，7 个吸附点（直径 8），滑钮 24 圆</td><td>吸附时有 1 次轻触感；下方实时显示档位名</td></tr>
+    <tr><td>Chip（品牌／筛选）</td><td>高 32，圆角 16，2px 墨线</td><td>默认奶油 / 选中砖红底白字 / 可删除（带 ×）</td></tr>
+    <tr><td>输入框</td><td>高 44，奶油底，1.5px 墨线</td><td>聚焦加粗至 2px；错误赭橙描边＋下方一行说明</td></tr>
+    <tr><td>开关</td><td>40×24，墨线描边</td><td>开＝橄榄底，关＝奶油底</td></tr>
+    <tr><td>底部弹层</td><td>圆角 20（仅上两角），最高 80vh，顶部把手 40×4</td><td>下滑关闭；遮罩点击关闭</td></tr>
+  </tbody>
+</table>
+
+<h3>5.6 星星人落位表</h3>
+<table>
+  <caption>表 22　星星人在各页的位置、尺寸与姿态（素材需官方授权）</caption>
+  <thead><tr><th style="width:20%">页面</th><th style="width:20%">位置</th><th style="width:10%">尺寸</th><th style="width:22%">姿态／道具</th><th>色板</th></tr></thead>
+  <tbody>
+    <tr><td>P1 首页</td><td>顶部状态行右侧</td><td>48</td><td>侧身望远，手搭凉棚</td><td>S1</td></tr>
+    <tr><td>P1 首页 · 空态</td><td>居中</td><td>160</td><td>抱一只空杯坐着</td><td>S3</td></tr>
+    <tr><td>P2 解析中</td><td>进度卡左上</td><td>56</td><td>举放大镜看标签</td><td>S4</td></tr>
+    <tr><td>S1 保存成功</td><td>居中</td><td>140</td><td>举杯，帽尖星发光</td><td>S3</td></tr>
+    <tr><td>S2 月历</td><td>「今天」格上方</td><td>24</td><td>站立小头像</td><td>S5</td></tr>
+    <tr><td>P4 详情</td><td>右上角，半身出画</td><td>40</td><td>探头看</td><td>S1</td></tr>
+    <tr><td>P6 品牌页</td><td>头图右下</td><td>40</td><td>抱着杯子</td><td>S2</td></tr>
+    <tr><td>P7 我的</td><td>页脚</td><td>60</td><td>躺平睡觉，帽尖星变暗</td><td>S4</td></tr>
+    <tr><td>P5 明细 / P3 确认页</td><td>不出现</td><td>—</td><td>只用星点、胶带、手写标签</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>5.7 动效</h3>
+<table>
+  <caption>表 23　允许的动效（其余一律不加）</caption>
+  <thead><tr><th style="width:24%">动效</th><th style="width:16%">时长/曲线</th><th>说明</th></tr></thead>
+  <tbody>
+    <tr><td>数字变化</td><td>180ms ease-out</td><td>只改透明度与 4px 位移；不做滚动计数</td></tr>
+    <tr><td>首屏卡片入场</td><td>120ms，错开 40ms</td><td>只在首次进入首页时播放一次</td></tr>
+    <tr><td>保存成功插画</td><td>240ms 弹入</td><td>一次，不循环、不漂浮</td></tr>
+    <tr><td>禁止</td><td>—</td><td>循环漂浮、星星闪烁、粒子、视差、骨架屏闪烁过亮</td></tr>
+  </tbody>
+</table>
+
+<h2 id="s6">六、交互设计</h2>
+
+<h3>6.1 记录主流程与 8 秒分解</h3>
+<table>
+  <caption>表 24　主流程时间预算</caption>
+  <thead><tr><th style="width:14%">环节</th><th style="width:14%">时间</th><th style="width:16%">用户动作</th><th>设计保障</th></tr></thead>
+  <tbody>
+    <tr><td>拍照</td><td>2.0s</td><td>1 次点击</td><td>进页即取景；快门居中最大；不做二次确认</td></tr>
+    <tr><td>解析</td><td>3–5s</td><td>0 动作</td><td>逐项点亮；可跳过；10s 自动转手动</td></tr>
+    <tr><td>确认</td><td>2.0s</td><td>1–2 次点击</td><td>必改区在拇指区；品牌／温度／杯型都是单击；保存常驻</td></tr>
+    <tr><td>保存</td><td>0.5s</td><td>1 次点击</td><td>点击即变文案，不做全屏 loading</td></tr>
+    <tr><td><b>合计</b></td><td><b>7.5–9.5s</b></td><td><b>3–4 次点击</b></td><td>点击次数靠「预填 + 点选」压下来，不靠减少字段</td></tr>
+  </tbody>
+</table>
+
+<h3>6.2 异常分支</h3>
+<table>
+  <caption>表 25　异常处理（一律不弹「失败」对话框）</caption>
+  <thead><tr><th style="width:22%">情形</th><th style="width:34%">系统行为</th><th>用户可见</th></tr></thead>
+  <tbody>
+    <tr><td>相机权限被拒</td><td>就地切相册</td><td>「已切到相册，也可以从相册选一张」</td></tr>
+    <tr><td>识别超时（&gt;10s）</td><td>进 P3 手动态，原图置顶</td><td>「没认出来，帮你填好了时间，其余改一下就行」</td></tr>
+    <tr><td>整张失败</td><td>同上，字段全空</td><td>同上，不出现错误码</td></tr>
+    <tr><td>重复记录（同品牌＋取餐号）</td><td>允许保存，先提示</td><td>「这个取餐号记过了，是同一杯吗？」＋两按钮</td></tr>
+    <tr><td>图片过大</td><td>静默压缩</td><td>解析页角落「已压缩」</td></tr>
+    <tr><td>无网络</td><td>图片入本地队列</td><td>顶部黄条「已暂存 1 条，联网后自动识别」</td></tr>
+    <tr><td>保存失败</td><td>不清空表单</td><td>dock 上方红字＋「重试」，已填内容保留</td></tr>
+  </tbody>
+</table>
+
+<h3>6.3 下钻与返回</h3>
+<table>
+  <caption>表 26　下钻规则：筛选要跟着走，返回要能复原</caption>
+  <thead><tr><th style="width:26%">从</th><th style="width:22%">到</th><th style="width:24%">带过去的参数</th><th>返回</th></tr></thead>
+  <tbody>
+    <tr><td>首页核心指标</td><td>P5 明细</td><td>当前范围（7/14/30/本月）</td><td>回首页，保留原滚动位置</td></tr>
+    <tr><td>冷热环形扇区</td><td>P5 明细</td><td>温度＝冰/常温/热</td><td>回首页</td></tr>
+    <tr><td>时段热力格</td><td>P5 明细</td><td>星期＋时段区间</td><td>回首页</td></tr>
+    <tr><td>品牌条形 / 卡片品牌名</td><td>P6 品牌页</td><td>品牌＋当前范围</td><td>回上一页</td></tr>
+    <tr><td>月历某天</td><td>当天侧滑</td><td>日期</td><td>关闭侧滑，月历保持原位</td></tr>
+    <tr><td>卡片 / 明细行</td><td>P4 详情</td><td>记录 ID</td><td>回上一页，列表滚动位置保留</td></tr>
+  </tbody>
+</table>
+<p class="note">明细页顶部的筛选 chip 必须可见、可删，否则用户不知道自己看的是「全部」还是「被筛过的」。这是下钻设计里最容易漏的一环。</p>
+
+<h3>6.4 反馈与提醒</h3>
+<table>
+  <caption>表 27　三种反馈形式，各管一件事</caption>
+  <thead><tr><th style="width:16%">形式</th><th style="width:20%">时机</th><th style="width:22%">内容示例</th><th>频次</th></tr></thead>
+  <tbody>
+    <tr><td>轻提示（底部 3s）</td><td>保存成功、补价完成、导出开始</td><td>「已存 · 今天第 3 杯」</td><td>每次操作</td></tr>
+    <tr><td>顶部常驻条</td><td>预算接近/超支、今日咖啡因超标</td><td>「本月已花 ¥186/¥200，还剩 ¥14」</td><td>常驻，可关，关掉当天不再出现</td></tr>
+    <tr><td>夜间提醒（一次）</td><td>18:00 后仍有记录</td><td>「18:42 这杯，咖啡因还在体内，可能影响今晚入睡」</td><td>每天最多 1 次，同类规则 24 小时 1 次</td></tr>
+  </tbody>
+</table>
+
+<h3>6.5 组件状态矩阵</h3>
+<table>
+  <caption>表 28　确认页字段的五种状态（开发直接按这张表写分支）</caption>
+  <thead>
+    <tr><th style="width:14%">字段</th><th style="width:17%">默认（预填）</th><th style="width:17%">低置信 0.6–0.85</th><th style="width:17%">缺失 / &lt;0.6</th><th style="width:17%">已手改</th><th>阻塞保存</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>品牌</td><td>chip 选中</td><td>chip 加黄点</td><td>红框＋「选一个」</td><td>去掉黄点</td><td>是</td></tr>
+    <tr><td>产品名</td><td>文本预填</td><td>右侧「核对」小标</td><td>红框＋联想候选</td><td>无标记</td><td>是</td></tr>
+    <tr><td>温度</td><td>三段选中</td><td>黄底＋核对标</td><td>红框</td><td>去标记</td><td>是</td></tr>
+    <tr><td>糖度</td><td>滑块定位＋档位名</td><td>黄底＋核对标</td><td>红框，滑块在 0</td><td>去标记</td><td>是</td></tr>
+    <tr><td>杯型</td><td>品牌默认＋「按品牌默认」</td><td>提示条</td><td>提示条＋可手填容量</td><td>显示手填容量</td><td>否</td></tr>
+    <tr><td>制作时间</td><td>补全日期＋「年份已补全」</td><td>—</td><td>默认当前时间</td><td>去标记</td><td>是</td></tr>
+    <tr><td>价格</td><td>「未填 · 可稍后补」</td><td>—</td><td>同上（不算缺失）</td><td>显示数值</td><td>否</td></tr>
+    <tr><td>门店</td><td>「未记录门店」</td><td>—</td><td>同上</td><td>显示名称</td><td>否</td></tr>
+    <tr><td>咖啡因 / 热量</td><td>≈ 值＋「估算」</td><td>—</td><td>「—」＋可手填</td><td>小圆点＋「已校准」</td><td>否</td></tr>
+  </tbody>
+</table>
+
+<h3>6.6 手势与热区</h3>
+<ul>
+  <li><b>允许的手势</b>：月历左右滑切月、弹层下滑关闭、详情原图上滑收起、明细左滑删除（带确认）。</li>
+  <li><b>必须提供按钮等价路径</b>：所有手势功能都要有可点的替代入口，否则视为不可用。</li>
+  <li><b>热区</b>：图标 ≥44×44；月历格 ≥40×44；糖度滑块的吸附点即使只有 8px，也要给 24px 的透明热区。</li>
+  <li><b>滚动</b>：首页范围切换吸顶，其余不吸顶；不做下拉刷新（H5 与系统手势冲突），改在顶部状态行给「刚刚更新」。</li>
+</ul>
+
+<h2 id="s7">七、验收清单与待定事项</h2>
+
+<h3>7.1 设计验收清单</h3>
+<table>
+  <caption>表 29　交付前逐条核对（对应规格书第 13 章）</caption>
+  <thead><tr><th style="width:8%">#</th><th style="width:44%">检查项</th><th>判定标准</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>首页 812px 内能看到预算与今日咖啡因</td><td>截图核对，不需要滚动</td></tr>
+    <tr><td>2</td><td>确认页一屏装完，保存键常驻</td><td>iPhone SE 375×667 也不出现「保存键被挤出屏」</td></tr>
+    <tr><td>3</td><td>价格为空时全站不出现 ¥0</td><td>花费模块、明细、详情、导出四处检查</td></tr>
+    <tr><td>4</td><td>咖啡因与热量全部带 ≈ 与「估算」</td><td>含图表、卡片、详情、导出</td></tr>
+    <tr><td>5</td><td>年份补全有可见标记且可改</td><td>确认页与详情页</td></tr>
+    <tr><td>6</td><td>杯型缺失有「按品牌默认」提示</td><td>选霸王茶姬时不出现「大杯 16oz」字样</td></tr>
+    <tr><td>7</td><td>取餐号、昵称、门店电话不出现在任何界面与导出</td><td>全局搜索字段名</td></tr>
+    <tr><td>8</td><td>每页星星人符合密度分级</td><td>A 级 ≤1、B 级 ≤2、C 级仅元素；确认页与明细页 0 完整形象</td></tr>
+    <tr><td>9</td><td>同屏不超过两套色板，语义色未被模块色替换</td><td>超标必须是赭橙 #D2542C</td></tr>
+    <tr><td>10</td><td>所有图表有「估算」标注位</td><td>四个图表逐一确认</td></tr>
+  </tbody>
+</table>
+
+<h3>7.2 需要你拍板的四件事</h3>
+<table>
+  <caption>表 30　四项决策（第 1–3 项已于 2026-11-07 确认按建议执行）</caption>
+  <thead><tr><th style="width:6%">#</th><th style="width:40%">问题</th><th>我的建议</th></tr></thead>
+  <tbody>
+    <tr><td>1</td><td>首页是否接受把「冷热构成」和「时段热力」合并成一张「饮用规律」卡？规格书里是两个模块。</td><td>合并。它们回答的是同一个问题，合并后首页少一屏，且色温映射只在合并态才成立。</td></tr>
+    <tr><td>2</td><td>明细默认用「行卡」还是「表格」？规格书写的是表格，11 列在 375 宽放不下。</td><td>默认行卡，右上角可切表格。表格模式横向滚动，表头吸顶。</td></tr>
+    <tr><td>3</td><td>霸王茶姬的「24 冰杯」怎么落控件？</td><td>杯型显示「24 冰杯（待确认）」，容量预填 710ml 并允许改；不改四档控件本身，避免为单个品牌加档。</td></tr>
+    <tr><td>4</td><td>星星人素材从哪来？</td><td>需要官方授权素材包（PNG/SVG，含 6–8 个姿态）。拿不到就先按占位框出稿，不自绘复刻，避免形象走样与授权问题。</td></tr>
+  </tbody>
+</table>
+
+<p class="note"><b>2026-11-07 确认</b>：① 首页把「冷热构成」与「时段热力」合并为一张「饮用规律」卡；② 明细默认行卡模式，右上角可切表格模式；③ 霸王茶姬杯型显示「24 冰杯（待确认）」，容量预填 710ml 并允许手改，不为单个品牌增加档位。第 4 项（星星人素材）待素材到位后落位。</p>
+
+<footer>
+  <p>本页为方案文本，未做视觉设计。下一步建议：①确认 7.2 的四件事 → ②出首页与确认页两张高保真视觉稿（含星星人素材落位）→ ③再铺其余页面。</p>
+  <p>依据文档：《个人咖啡摄入工作台_开发规格说明书_v1.1》（2026-11-04）。色值为取色近似值，落地前需按官方素材与屏幕校色重新取样。</p>
+</footer>
+
+</body>
+</html>
